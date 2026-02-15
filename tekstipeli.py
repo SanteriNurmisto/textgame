@@ -27,7 +27,7 @@ class Pelaaja:
 
     def inv(self):
         if len(self.tavaraluettelo) == 0:
-            return "Tavaraluettelosi on tyhjä"
+            return "Tavaraluettelossasi ei ole mitään"
         else:
             tavarat = ""
             for tavara in self.tavaraluettelo:
