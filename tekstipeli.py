@@ -15,7 +15,10 @@ class Huone:
     def katso(self):
         tavarat = ""
         for tavara in self.tavaraluettelo:
-            tavarat += tavara.nimi + "\n"
+            if tavara.nimi.lower() == "ovi":
+                tavarat += tavara.hae_ovi() + "\n"
+            else:
+                tavarat += tavara.nimi + "\n"
 
         return self.kuvaus+ ".\nSisältää seuraavat tavarat: \n" + tavarat
 
@@ -54,10 +57,7 @@ class Pelaaja:
     def pudota(self, kohde, huone):
         for tavara in self.tavaraluettelo:
             if tavara.nimi.lower() == kohde:
-                #self.tavaraluettelo.remove(tavara)
-                #huone.tavaraluettelo.append(tavara)
                 return tavara.siirra(self, huone)
-                #return "Pudotin tavaran huoneeseen"
         return "Sinulla ei ole pudotettavaa"
     
     def lue(self, kohde):
@@ -80,6 +80,26 @@ class Pelaaja:
             if tavara.nimi.lower() == kohde:
                 return tavara.sammuta()
         return "En voi sammuttaa sellaista mitä minulla ei ole."
+        
+    def avaa(self, kohde):    
+        for tavara in huone.tavaraluettelo:
+            if tavara.nimi.lower() == kohde and tavara.nimi.lower() == "ovi":
+                if tavara.auki:
+                    return "Ovi on jo auki"
+                else:
+                    tavara.auki = True
+                    return "Ovi avautuu narahtaen"
+        return "Ei ole mitään avattavaa"
+
+    def sulje(self,kohde):
+        for tavara in huone.tavaraluettelo:
+            if tavara.nimi.lower() == kohde and tavara.nimi.lower() == "ovi":
+                if not tavara.auki:
+                    return "Ovi on jo kiinni"
+                else:
+                    tavara.auki = False
+                    return "Ovi sulkeutuu narahtaen"
+        return "Ei ole mitään suljettavaa"
 
 class Esine:
 
@@ -102,8 +122,26 @@ class Esine:
         return "Ei ole mitään sammutettavaa."
 
 class Kirja(Esine):
+    luettu = False
     def lue(self):
-            return "Tämä kirja on Taru sormusten herrasta"
+        #return "Tämä kirja on Taru sormusten herrasta"
+        #print(pelaaja.lue(kohde))
+        if self.luettu:
+            return "Tämä kirja on taru sormusten herrasta"
+        else:
+            self.luettu = True
+            huone.tavaraluettelo.append(Muistilappu("Muistilappu", 0))
+            return "Kirjan välistä näyttänee tippuneen joku lappu"
+
+
+
+    
+    
+class Muistilappu(Esine):
+    def lue(self):
+        return "PIN-koodi 7752"
+    
+
 
 class Vasara(Esine):
     pass
@@ -150,8 +188,19 @@ class Tulitikut(Esine):
     pass
 
 class Ovi(Esine):
+    def __init__(self, nimi, paino):
+        super().__init__(nimi, paino)
+        self.auki = False
+
     def siirra(self, kohde, huone):
         return "Ovea ei saa irti"
+
+    def hae_ovi(self):
+        if self.auki:
+            return self.nimi + " (auki)"
+        else:
+            return self.nimi + " (kiinni)"
+    
 
 pelaaja = Pelaaja("Jaska", 10)
 huone = Huone("Kellarivarasto")
@@ -169,18 +218,31 @@ while True:
     if komento == "exit":
         break
     elif komento == "ota":
-        print(pelaaja.ota(kohde, huone))
+        print(pelaaja.ota(kohde, huone))   
+
     elif komento == "pudota":
         print(pelaaja.pudota(kohde, huone))
+
     elif komento == "katso":
         print(huone.katso())
+
     elif komento == "inv":
         print(pelaaja.inv())
+
+    #elif komento == "lue" and kohde == "kirja":
+        #print(pelaaja.lue(kohde))
+        #print("Kirjan välistä näyttänee tippuneen joku lappu")
+        #huone.tavaraluettelo.append(Muistilappu("Muistilappu", 0))
+
     elif komento == "lue":
         print(pelaaja.lue(kohde))
     elif komento == "sytytä":
         print(pelaaja.sytyta(kohde))
     elif komento == "sammuta":
         print(pelaaja.sammuta(kohde))
+    elif komento == "avaa":
+        print(pelaaja.avaa(kohde))
+    elif komento == "sulje":
+        print(pelaaja.sulje(kohde))
     else:
         print("En ymmärrä mitä haluat tehdä")
