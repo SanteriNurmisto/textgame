@@ -13,21 +13,17 @@ class Huone:
     def katso(self):
         tavarat = ""
         for tavara in self.tavaraluettelo:
-            if tavara.nimi.lower() == "ovi":
-                tavarat += tavara.hae_ovi() + "\n"
-            else:
-                tavarat += tavara.nimi + "\n"
-
+            tavarat += tavara.pitka_nimi + "\n"
         return self.kuvaus+ ".\nSisältää seuraavat tavarat: \n" + tavarat
 
 class Kellarivarasto(Huone):
     def __init__(self, game, kuvaus):
         super().__init__(game, kuvaus)
-        self.tavaraluettelo.append(esine.Kirja("Kirja", 1, self))
-        self.tavaraluettelo.append(esine.Vasara("Vasara", 3, self))
-        self.tavaraluettelo.append(esine.Rautakanki("Rautakanki", 5, self))
-        self.tavaraluettelo.append(esine.Tuoli("Tuoli", 7, self))
-        self.tavaraluettelo.append(esine.Alasin("Alasin", 9, self))
-        self.tavaraluettelo.append(esine.Ovi("Ovi", None, self))
-        self.tavaraluettelo.append(esine.Kynttila("Kynttilä", 0.1, self))
-        self.tavaraluettelo.append(esine.Tulitikut("Tulitikut", 0.01, self))
+        self.tavaraluettelo.append(esine.Kirja(self, "Kirja", "Kovakantinen kirja", 1))
+        self.tavaraluettelo.append(esine.Vasara(self, "Vasara", "", 3))
+        self.tavaraluettelo.append(esine.Rautakanki(self, "Rautakanki", "Ruosteinen rautakanki", 5))
+        self.tavaraluettelo.append(esine.Tuoli(self, "Tuoli", "", 7))
+        self.tavaraluettelo.append(esine.Alasin(self, "Alasin", "", 9))
+        self.tavaraluettelo.append(esine.Ovi(self, "Ovi", "Ovi pohjoiseen (kiinni)", None))
+        self.tavaraluettelo.append(esine.Kynttila(self, "Kynttilä", "", 0.1))
+        self.tavaraluettelo.append(esine.Tulitikut(self, "Tulitikut", "", 0.01))

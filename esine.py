@@ -1,10 +1,14 @@
+from pelaaja import Pelaaja
+from random import randint
+
 class Esine():
 
     # Esineillä, pelaajilla ja huoneilla on relaatio game-olioon
     game = None
 
-    def __init__(self, nimi, paino, huone):
+    def __init__(self, huone, nimi, pitka_nimi="", paino=0):
         self.nimi = nimi
+        self.pitka_nimi = pitka_nimi or self.nimi
         self.paino = paino
         # Kustakin esineestä tiedetään, missä huoneessa se sijaitsee
         self.huone = huone
@@ -15,14 +19,14 @@ class Esine():
         kohde.tavaraluettelo.append(self)
 
         # Vaihdetaan esineen huone. Jos esine on siirretty pelaajan inventaarioon, huoneeksi asetetaan None
-        if type(kohde).__name__ == "Pelaaja":
+        if isinstance(kohde, Pelaaja):
             self.huone = None
         else:
             self.huone = kohde
 
         return "Tehty työtä käskettyä"
     
-    def lue(self):
+    def lue(self, pelaaja):
         return "Tätä ei voi lukea"
     
     def sytyta(self, tavaraluettelo=None):
@@ -30,20 +34,31 @@ class Esine():
     
     def sammuta(self):
         return "Ei ole mitään sammutettavaa."
+    
+    def avaa(self):
+        return "En tiedä mitä tarkoitat kun pitäisi avata "+self.name+"."
+
+    def sulje(self):
+        return "En tiedä mitä tarkoitat kun pitäisi sulkea "+self.name+"."
 
 class Kirja(Esine):
     luettu = False
-    def lue(self):
+    def lue(self, pelaaja):
         if self.luettu:
-            return "Tämä kirja on taru sormusten herrasta"
+            return "Tämä kirja on Taru Sormusten Herrasta"
         else:
             self.luettu = True
-            self.game.pelaaja.huone.tavaraluettelo.append(Muistilappu("Muistilappu", 0, self.game.pelaaja.huone))
-            return "Kirjan välistä näyttänee tippuneen joku lappu"
+            pelaaja.huone.tavaraluettelo.append(Muistilappu(self, "Muistilappu", "Post-It muistilappu", 0))
+            return "Tämä kirja on Taru Sormusten Herrasta. Kirjaa lueskellessani sen välistä putosi lattialle muistilappu!"
     
 class Muistilappu(Esine):
-    def lue(self):
-        return "PIN-koodi 7752"
+
+    def __init__(self, huone, nimi, pitka_nimi="", paino=0):
+        super().__init__(huone, nimi, pitka_nimi, paino)
+        self.random_pin = randint(0,8999) + 1000
+
+    def lue(self, pelaaja):
+        return 'Lapulle on kirjoitettu numerosarja "'+str(self.random_pin)+'". Mahtaako se olla jokin PIN-koodi?'
 
 class Vasara(Esine):
     pass
@@ -71,6 +86,7 @@ class Kynttila(Esine):
         for tavara in tavaraluettelo:
             if tavara.nimi == "Tulitikut":
                 self.palaa = True
+                self.pitka_nimi = "Kynttilä (palaa)"
                 return "Kynttilä on sytytetty."
             
         return "Ei minulla ole mitään millä sytyttää."
@@ -79,6 +95,7 @@ class Kynttila(Esine):
 
         if self.palaa:
             self.palaa = False
+            self.pitka_nimi = "Kynttilä"
             return "Kynttilä on sammutettu."
         else:
             return "Et voi sammuttaa kynttilää, joka ei pala."
@@ -90,11 +107,27 @@ class Ovi(Esine):
     
     auki = False
 
-    def siirra(self, kohde, huone):
+    def siirra(self, lahde, kohde):
         return "Ovea ei saa irti"
 
-    def hae_ovi(self):
+    def avaa(self):
         if self.auki:
-            return self.nimi + " (auki)"
+            return "Ovi on jo auki"
         else:
-            return self.nimi + " (kiinni)"
+            self.auki = True
+            self.pitka_nimi = "Ovi pohjoiseen (auki)"
+            return "Ovi avautuu narahtaen"
+
+    def sulje(self):
+        if not self.auki:
+            return "Ovi on jo kiinni"
+        else:
+            self.auki = False
+            self.pitka_nimi = "Ovi pohjoiseen (kiinni)"
+            return "Ovi sulkeutuu narahtaen"
+
+    #def hae_ovi(self):
+    #    if self.auki:
+    #        return self.pitka_nimi + " (auki)"
+    #    else:
+    #        return self.pitka_nimi + " (kiinni)"

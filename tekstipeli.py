@@ -9,10 +9,11 @@ class Game:
 
     def __init__(self):
         self.huoneet.append(huone.Kellarivarasto(self, "Kellarivarasto"))
-        self.pelaaja = Pelaaja("Jaska", self, 10, self.huoneet[0])
+        self.pelaaja = Pelaaja(self, "Jaska", 10, self.huoneet[0])
 
     def parseri(self, syote):
-        sanat = syote.split(" ")
+        syote = syote.strip()
+        sanat = syote.split(" ", maxsplit=1)
         if len(sanat) > 1:
             return sanat[0].lower(), sanat[1].lower()
         else:
@@ -26,9 +27,9 @@ while True:
     if komento == "exit":
         break
     elif komento == "ota":
-        print(game.pelaaja.ota(kohde, game.pelaaja.huone))   
+        print(game.pelaaja.ota(kohde))   
     elif komento == "pudota":
-        print(game.pelaaja.pudota(kohde, game.pelaaja.huone))
+        print(game.pelaaja.pudota(kohde))
     elif komento == "katso":
         print(game.pelaaja.huone.katso())
     elif komento == "inv":

@@ -18,35 +18,36 @@ class Pelaaja:
         else:
             tavarat = ""
             for tavara in self.tavaraluettelo:
-                tavarat += tavara.nimi + "\n"
+                tavarat += tavara.pitka_nimi + "\n"
             return tavarat
         
-    def ota(self, kohde, huone):
+    def ota(self, kohde):
 
         nykyinen_paino = 0
         for tavara in self.tavaraluettelo:
             nykyinen_paino += tavara.paino
 
-        for tavara in huone.tavaraluettelo:
+        for tavara in self.huone.tavaraluettelo:
             if tavara.nimi.lower() == kohde:
 
                 if nykyinen_paino + tavara.paino > self.kantokyky:
                     return "Et jaksa kantaa enempää tavaraa"
 
-                return tavara.siirra(huone, self)
+                return tavara.siirra(self.huone, self)
 
         return "Sellaista tavaraa ei löytynyt"
     
-    def pudota(self, kohde, huone):
+    def pudota(self, kohde):
         for tavara in self.tavaraluettelo:
             if tavara.nimi.lower() == kohde:
-                return tavara.siirra(self, huone)
+                return tavara.siirra(self, self.huone)
         return "Sinulla ei ole pudotettavaa"
     
     def lue(self, kohde):
         for tavara in self.tavaraluettelo:
             if tavara.nimi.lower() == kohde:
-                return tavara.lue()
+                # Kuka lukee? Pelaaja (self) lukee.
+                return tavara.lue(self)
         return "Sinulla ei ole sellaista esinettä"
     
     def kerro_paino(self, kohde):
@@ -66,20 +67,12 @@ class Pelaaja:
         
     def avaa(self, kohde):    
         for tavara in self.huone.tavaraluettelo:
-            if tavara.nimi.lower() == kohde and tavara.nimi.lower() == "ovi":
-                if tavara.auki:
-                    return "Ovi on jo auki"
-                else:
-                    tavara.auki = True
-                    return "Ovi avautuu narahtaen"
+            if tavara.nimi.lower() == kohde:
+                return tavara.avaa()
         return "Ei ole mitään avattavaa"
 
     def sulje(self,kohde):
         for tavara in self.huone.tavaraluettelo:
-            if tavara.nimi.lower() == kohde and tavara.nimi.lower() == "ovi":
-                if not tavara.auki:
-                    return "Ovi on jo kiinni"
-                else:
-                    tavara.auki = False
-                    return "Ovi sulkeutuu narahtaen"
+            if tavara.nimi.lower() == kohde:
+                return tavara.sulje()
         return "Ei ole mitään suljettavaa"
