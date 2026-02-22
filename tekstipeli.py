@@ -13,7 +13,10 @@ class Huone:
     def katso(self):
         tavarat = ""
         for tavara in self.tavaraluettelo:
-            tavarat += tavara.nimi + "\n"
+            if tavara.nimi.lower() == "ovi":
+                tavarat += tavara.hae_ovi() + "\n"
+            else:
+                tavarat += tavara.nimi + "\n"
 
         return self.kuvaus+ ".\nSisältää seuraavat tavarat: \n" + tavarat
 
@@ -54,10 +57,7 @@ class Pelaaja:
     def pudota(self, kohde, huone):
         for tavara in self.tavaraluettelo:
             if tavara.nimi.lower() == kohde:
-                #self.tavaraluettelo.remove(tavara)
-                #huone.tavaraluettelo.append(tavara)
                 return tavara.siirra(self, huone)
-                #return "Pudotin tavaran huoneeseen"
         return "Sinulla ei ole pudotettavaa"
     
     def lue(self, kohde):
@@ -69,7 +69,25 @@ class Pelaaja:
     def kerro_paino(self, kohde):
         pass
         
+    def avaa(self, kohde):    
+        for tavara in huone.tavaraluettelo:
+            if tavara.nimi.lower() == kohde and tavara.nimi.lower() == "ovi":
+                if tavara.auki:
+                    return "Ovi on jo auki"
+                else:
+                    tavara.auki = True
+                    return "Ovi avautuu narahtaen"
+        return "Ei ole mitään avattavaa"
 
+    def sulje(self,kohde):
+        for tavara in huone.tavaraluettelo:
+            if tavara.nimi.lower() == kohde and tavara.nimi.lower() == "ovi":
+                if not tavara.auki:
+                    return "Ovi on jo kiinni"
+                else:
+                    tavara.auki = False
+                    return "Ovi sulkeutuu narahtaen"
+        return "Ei ole mitään suljettavaa"
 
 class Esine:
     def __init__(self, nimi, paino):
@@ -100,9 +118,18 @@ class Alasin(Esine):
     pass
 
 class Ovi(Esine):
+    def __init__(self, nimi, paino):
+        super().__init__(nimi, paino)
+        self.auki = False
+
     def siirra(self, kohde, huone):
         return "Ovea ei saa irti"
 
+    def hae_ovi(self):
+        if self.auki:
+            return self.nimi + " (auki)"
+        else:
+            return self.nimi + " (kiinni)"
     
 
 pelaaja = Pelaaja("Jaska", 10)
@@ -131,5 +158,9 @@ while True:
         print(pelaaja.inv())
     elif komento == "lue":
         print(pelaaja.lue(kohde))
+    elif komento == "avaa":
+        print(pelaaja.avaa(kohde))
+    elif komento == "sulje":
+        print(pelaaja.sulje(kohde))
     else:
         print("En ymmärrä mitä haluat tehdä")
