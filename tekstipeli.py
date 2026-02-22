@@ -52,7 +52,6 @@ class Pelaaja:
                 return tavara.siirra(huone, self)
 
         return "Sellaista tavaraa ei löytynyt"
-
     
     def pudota(self, kohde, huone):
         for tavara in self.tavaraluettelo:
@@ -124,24 +123,16 @@ class Esine:
 class Kirja(Esine):
     luettu = False
     def lue(self):
-        #return "Tämä kirja on Taru sormusten herrasta"
-        #print(pelaaja.lue(kohde))
         if self.luettu:
             return "Tämä kirja on taru sormusten herrasta"
         else:
             self.luettu = True
             huone.tavaraluettelo.append(Muistilappu("Muistilappu", 0))
             return "Kirjan välistä näyttänee tippuneen joku lappu"
-
-
-
-    
     
 class Muistilappu(Esine):
     def lue(self):
         return "PIN-koodi 7752"
-    
-
 
 class Vasara(Esine):
     pass
@@ -165,9 +156,9 @@ class Kynttila(Esine):
             return "Kynttilä palaa jo, et voi sytyttää sitä uudelleen."
 
         # Jos ei ole mitään tavaroita, ei voi myöskään sytyttää mitään.
-        if not tavaraluettelo:
-            return "Et voi sytyttää kynttilää."
-        
+        #if not tavaraluettelo:
+        #    return "Et voi sytyttää kynttilää."
+
         # Kynttilä voidaan sytyttää, jos pelaajalla on tulitikut.
         for tavara in tavaraluettelo:
             if tavara.nimi == "Tulitikut":
@@ -200,7 +191,6 @@ class Ovi(Esine):
             return self.nimi + " (auki)"
         else:
             return self.nimi + " (kiinni)"
-    
 
 pelaaja = Pelaaja("Jaska", 10)
 huone = Huone("Kellarivarasto")
@@ -219,21 +209,12 @@ while True:
         break
     elif komento == "ota":
         print(pelaaja.ota(kohde, huone))   
-
     elif komento == "pudota":
         print(pelaaja.pudota(kohde, huone))
-
     elif komento == "katso":
         print(huone.katso())
-
     elif komento == "inv":
         print(pelaaja.inv())
-
-    #elif komento == "lue" and kohde == "kirja":
-        #print(pelaaja.lue(kohde))
-        #print("Kirjan välistä näyttänee tippuneen joku lappu")
-        #huone.tavaraluettelo.append(Muistilappu("Muistilappu", 0))
-
     elif komento == "lue":
         print(pelaaja.lue(kohde))
     elif komento == "sytytä":
