@@ -9,6 +9,8 @@ class Huone:
         self.tavaraluettelo.append(Tuoli("Tuoli", 7))
         self.tavaraluettelo.append(Alasin("Alasin", 9))
         self.tavaraluettelo.append(Ovi("Ovi", None))
+        self.tavaraluettelo.append(Kynttila("Kynttilä", 0.1))
+        self.tavaraluettelo.append(Tulitikut("Tulitikut", 0.01))
 
     def katso(self):
         tavarat = ""
@@ -16,8 +18,6 @@ class Huone:
             tavarat += tavara.nimi + "\n"
 
         return self.kuvaus+ ".\nSisältää seuraavat tavarat: \n" + tavarat
-
-        
 
 class Pelaaja:
     tavaraluettelo = []
@@ -68,21 +68,38 @@ class Pelaaja:
     
     def kerro_paino(self, kohde):
         pass
-        
 
+    def sytyta(self, kohde):
+        for tavara in self.tavaraluettelo:
+            if tavara.nimi.lower() == kohde:
+                return tavara.sytyta(self.tavaraluettelo)
+        return "En voi sytyttää sellaista mitä minulla ei ole."
+    
+    def sammuta(self, kohde):
+        for tavara in self.tavaraluettelo:
+            if tavara.nimi.lower() == kohde:
+                return tavara.sammuta()
+        return "En voi sammuttaa sellaista mitä minulla ei ole."
 
 class Esine:
+
     def __init__(self, nimi, paino):
         self.nimi = nimi
         self.paino = paino
+
     def siirra(self, lahde, kohde):
         lahde.tavaraluettelo.remove(self)
         kohde.tavaraluettelo.append(self)
         return "Tehty työtä käskettyä"
+    
     def lue(self):
         return "Tätä ei voi lukea"
     
+    def sytyta(self, tavaraluettelo=None):
+        return "Et voi sytyttää tätä."
     
+    def sammuta(self):
+        return "Ei ole mitään sammutettavaa."
 
 class Kirja(Esine):
     def lue(self):
@@ -96,17 +113,47 @@ class Rautakanki(Esine):
 
 class Tuoli(Esine):
     pass
+
 class Alasin(Esine):
+    pass
+
+class Kynttila(Esine):
+    palaa = False
+
+    def sytyta(self, tavaraluettelo=None):
+
+        # Palaako jo?
+        if self.palaa:
+            return "Kynttilä palaa jo, et voi sytyttää sitä uudelleen."
+
+        # Jos ei ole mitään tavaroita, ei voi myöskään sytyttää mitään.
+        if not tavaraluettelo:
+            return "Et voi sytyttää kynttilää."
+        
+        # Kynttilä voidaan sytyttää, jos pelaajalla on tulitikut.
+        for tavara in tavaraluettelo:
+            if tavara.nimi == "Tulitikut":
+                self.palaa = True
+                return "Kynttilä on sytytetty."
+            
+        return "Ei minulla ole mitään millä sytyttää."
+   
+    def sammuta(self):
+
+        if self.palaa:
+            self.palaa = False
+            return "Kynttilä on sammutettu."
+        else:
+            return "Et voi sammuttaa kynttilää, joka ei pala."
+
+class Tulitikut(Esine):
     pass
 
 class Ovi(Esine):
     def siirra(self, kohde, huone):
         return "Ovea ei saa irti"
 
-    
-
 pelaaja = Pelaaja("Jaska", 10)
-
 huone = Huone("Kellarivarasto")
 
 def parseri(syote):
@@ -131,5 +178,9 @@ while True:
         print(pelaaja.inv())
     elif komento == "lue":
         print(pelaaja.lue(kohde))
+    elif komento == "sytytä":
+        print(pelaaja.sytyta(kohde))
+    elif komento == "sammuta":
+        print(pelaaja.sammuta(kohde))
     else:
         print("En ymmärrä mitä haluat tehdä")
