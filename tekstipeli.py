@@ -103,8 +103,26 @@ class Esine:
     
 
 class Kirja(Esine):
+    luettu = False
     def lue(self):
-            return "Tämä kirja on Taru sormusten herrasta"
+        #return "Tämä kirja on Taru sormusten herrasta"
+        #print(pelaaja.lue(kohde))
+        if self.luettu:
+            return "Tämä kirja on taru sormusten herrasta"
+        else:
+            self.luettu = True
+            huone.tavaraluettelo.append(Muistilappu("Muistilappu", 0))
+            return "Kirjan välistä näyttänee tippuneen joku lappu"
+
+
+
+    
+    
+class Muistilappu(Esine):
+    def lue(self):
+        return "PIN-koodi 7752"
+    
+
 
 class Vasara(Esine):
     pass
@@ -149,13 +167,22 @@ while True:
     if komento == "exit":
         break
     elif komento == "ota":
-        print(pelaaja.ota(kohde, huone))
+        print(pelaaja.ota(kohde, huone))   
+
     elif komento == "pudota":
         print(pelaaja.pudota(kohde, huone))
+
     elif komento == "katso":
         print(huone.katso())
+
     elif komento == "inv":
         print(pelaaja.inv())
+
+    #elif komento == "lue" and kohde == "kirja":
+        #print(pelaaja.lue(kohde))
+        #print("Kirjan välistä näyttänee tippuneen joku lappu")
+        #huone.tavaraluettelo.append(Muistilappu("Muistilappu", 0))
+
     elif komento == "lue":
         print(pelaaja.lue(kohde))
     elif komento == "avaa":
