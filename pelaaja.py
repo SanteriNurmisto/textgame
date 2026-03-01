@@ -1,3 +1,5 @@
+from random import randint
+
 class Pelaaja:
 
     # Esineillä, pelaajilla ja huoneilla on relaatio game-olioon
@@ -11,6 +13,7 @@ class Pelaaja:
         self.kantokyky = kantokyky
         self.huone = huone
         self.game = game
+        self.oven_pin = str(randint(0,8999) + 1000)
 
     def inv(self):
         if len(self.tavaraluettelo) == 0:
@@ -29,6 +32,9 @@ class Pelaaja:
 
         for tavara in self.huone.tavaraluettelo:
             if tavara.nimi.lower() == kohde:
+
+                if tavara.paino == None:
+                    return "Et voi poimia kyseistä tavaraa"
 
                 if nykyinen_paino + tavara.paino > self.kantokyky:
                     return "Et jaksa kantaa enempää tavaraa"

@@ -1,5 +1,5 @@
 from pelaaja import Pelaaja
-from random import randint
+
 
 class Esine():
 
@@ -53,12 +53,12 @@ class Kirja(Esine):
     
 class Muistilappu(Esine):
 
-    def __init__(self, huone, nimi, pitka_nimi="", paino=0):
-        super().__init__(huone, nimi, pitka_nimi, paino)
-        self.random_pin = randint(0,8999) + 1000
+    #def __init__(self, huone, nimi, pitka_nimi="", paino=0):
+    #    super().__init__(huone, nimi, pitka_nimi, paino)
+    #    self.random_pin = randint(0,8999) + 1000
 
     def lue(self, pelaaja):
-        return 'Lapulle on kirjoitettu numerosarja "'+str(self.random_pin)+'". Mahtaako se olla jokin PIN-koodi?'
+        return 'Lapulle on kirjoitettu numerosarja "'+str(pelaaja.oven_pin)+'". Mahtaako se olla jokin PIN-koodi?'
 
 class Vasara(Esine):
     pass
@@ -106,6 +106,7 @@ class Tulitikut(Esine):
 class Ovi(Esine):
     
     auki = False
+    lukittu = True
 
     def siirra(self, lahde, kohde):
         return "Ovea ei saa irti"
@@ -113,19 +114,29 @@ class Ovi(Esine):
     def avaa(self):
         if self.auki:
             return "Ovi on jo auki"
-        else:
-            self.auki = True
-            self.pitka_nimi = "Ovi pohjoiseen (auki)"
-            return "Ovi avautuu narahtaen"
+        elif self.lukittu:
+            koodi = input ("Ovi näyttää olevan lukossa. Ovessa on pieni laite jossa on numeronäppäimet sekä pieni näyttö.\nNäytössä lukee SYÖTÄ 4-NUMEROINEN PIN:\n")
+            if koodi == self.game.pelaaja.oven_pin:
+                self.auki = True
+                self.lukittu = False
+                self.pitka_nimi = "Ovi pohjoiseen (auki)"
+                return "Ovi avautuu narahtaen"
+            else:
+                return "Näppäimistö päästää ikävän äänen joka kertoo että syötit koodin väärin"
+        return "Avaaminen ei onnistu" 
 
     def sulje(self):
         if not self.auki:
             return "Ovi on jo kiinni"
         else:
             self.auki = False
+            self.lukittu = True
             self.pitka_nimi = "Ovi pohjoiseen (kiinni)"
             return "Ovi sulkeutuu narahtaen"
-
+        
+    def syota_pin(self, koodi, kohde):
+        pass
+   
     #def hae_ovi(self):
     #    if self.auki:
     #        return self.pitka_nimi + " (auki)"
