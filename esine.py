@@ -8,6 +8,8 @@ class Esine():
 
     def __init__(self, huone, nimi, pitka_nimi="", paino=0):
         self.nimi = nimi
+        self.sytytettavissa = False
+        self.kuuma = False
         self.pitka_nimi = pitka_nimi or self.nimi
         self.paino = paino
         # Kustakin esineestä tiedetään, missä huoneessa se sijaitsee
@@ -58,13 +60,71 @@ class Muistilappu(Esine):
     #    self.random_pin = randint(0,8999) + 1000
 
     def lue(self, pelaaja):
-        return 'Lapulle on kirjoitettu numerosarja "'+str(pelaaja.oven_pin)+'". Mahtaako se olla jokin PIN-koodi?'
+        return 'Lapulle on kirjoitettu numerosarja "'+str(self.random_pin)+'". Mahtaako se olla jokin PIN-koodi?'
+    
+class Ahjo(Esine):
+
+
+    def __init__(self, huone, nimi, pitka_nimi="", paino=0):
+        super().__init__(huone, nimi, pitka_nimi, paino)
+        self.sytytettavissa = True
+        self.kuuma = False
+
+    def siirra(self, lahde, kohde):
+        return "Ahjoa ei voi siirtää."
+
+    def sytyta(self, tavaraluettelo=None):
+
+        if self.kuuma:
+            return "Ahjo on jo kuuma."
+
+        for tavara in tavaraluettelo:
+            if tavara.nimi == "Tulitikut":
+                self.kuuma = True
+                self.pitka_nimi = "Ahjo (kuuma)"
+                return "Sytytit ahjon. Se hehkuu nyt kuumana."
+
+        return "Et voi sytyttää ahjoa ilman tulitikkuja."
 
 class Vasara(Esine):
     pass
     
 class Rautakanki(Esine):
-    pass
+
+    
+
+    def kuumenna(self):
+        ahjo = None
+        for tavara in self.game.pelaaja.huone.tavaraluettelo:
+            if tavara.nimi.lower() == "ahjo":
+                ahjo = tavara
+        if not ahjo:
+            return "Tarvittaisiin kuuma ahjo"
+        #Onko huoneessa kuuma ahjo
+        #Jos on, niin rautakanki asetetaa kuumaksi
+        if ahjo.kuuma:
+            self.kuuma = True
+            self.pitka_nimi = "Rautakanki (punahehkuinen)"
+            return "Rautakanki kuumenee punahehkuiseksi."
+        else:
+            return "Ahjo ei ole kuuma."
+
+    def tao(self):
+
+        if not self.kuuma:
+            return "Rautakanki ei ole tarpeeksi kuuma."
+
+        for tavara in pelaaja.tavaraluettelo:
+            if tavara.nimi.lower() == "vasara":
+
+                pelaaja.tavaraluettelo.remove(self)
+
+                miekka = Esine(None, "Miekka", "Terävä miekka", 5)
+                pelaaja.tavaraluettelo.append(miekka)
+
+                return "Taot rautakangesta miekan!"
+
+        return "Tarvitset vasaran."
 
 class Tuoli(Esine):
     pass
@@ -74,7 +134,10 @@ class Alasin(Esine):
 
 class Kynttila(Esine):
 
-    palaa = False
+    def __init__(self, huone, nimi, pitka_nimi="", paino=0):
+        super().__init__(huone, nimi, pitka_nimi, paino)
+        self.sytytettavissa = True
+        self.palaa = False
 
     def sytyta(self, tavaraluettelo=None):
 

@@ -5,8 +5,9 @@ class Huone:
     # Esineillä, pelaajilla ja huoneilla on relaatio game-olioon
     game = None
 
-    def __init__(self, game, kuvaus):
+    def __init__(self, game, kuvaus, tunniste):
         self.tavaraluettelo = []
+        self.tunniste = tunniste
         self.game = game
         self.kuvaus = kuvaus
 
@@ -17,8 +18,8 @@ class Huone:
         return self.kuvaus+ ".\nSisältää seuraavat tavarat: \n" + tavarat
 
 class Kellarivarasto(Huone):
-    def __init__(self, game, kuvaus):
-        super().__init__(game, kuvaus)
+    def __init__(self, game, kuvaus, tunniste):
+        super().__init__(game, kuvaus, tunniste)
         self.tavaraluettelo.append(esine.Kirja(self, "Kirja", "Kovakantinen kirja", 1))
         self.tavaraluettelo.append(esine.Vasara(self, "Vasara", "", 3))
         self.tavaraluettelo.append(esine.Rautakanki(self, "Rautakanki", "Ruosteinen rautakanki", 5))
@@ -27,3 +28,4 @@ class Kellarivarasto(Huone):
         self.tavaraluettelo.append(esine.Ovi(self, "Ovi", "Ovi pohjoiseen (kiinni)", None))
         self.tavaraluettelo.append(esine.Kynttila(self, "Kynttilä", "", 0.1))
         self.tavaraluettelo.append(esine.Tulitikut(self, "Tulitikut", "", 0.01))
+        self.tavaraluettelo.append(esine.Ahjo(self, "Ahjo", "", None))

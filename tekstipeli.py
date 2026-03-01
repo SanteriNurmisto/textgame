@@ -8,7 +8,7 @@ class Game:
     pelaaja = None
 
     def __init__(self):
-        self.huoneet.append(huone.Kellarivarasto(self, "Kellarivarasto"))
+        self.huoneet.append(huone.Kellarivarasto(self, "Kellarivarasto", "A1"))
         self.pelaaja = Pelaaja(self, "Jaska", 10, self.huoneet[0])
 
     def parseri(self, syote):
@@ -44,5 +44,9 @@ while True:
         print(game.pelaaja.avaa(kohde))
     elif komento == "sulje":
         print(game.pelaaja.sulje(kohde))
+    elif komento == "kuumenna":
+        print(game.pelaaja.kuumenna(kohde))
+    elif komento == "tao":
+        print(game.pelaaja.tao(kohde))
     else:
         print("En ymmärrä mitä haluat tehdä")

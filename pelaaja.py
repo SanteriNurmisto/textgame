@@ -60,16 +60,17 @@ class Pelaaja:
         pass
 
     def sytyta(self, kohde):
-        for tavara in self.tavaraluettelo:
-            if tavara.nimi.lower() == kohde:
+        tavarat = self.tavaraluettelo + self.huone.tavaraluettelo
+        for tavara in tavarat:
+            if tavara.nimi.lower() == kohde and tavara.sytytettavissa:
                 return tavara.sytyta(self.tavaraluettelo)
-        return "En voi sytyttää sellaista mitä minulla ei ole."
+        return "Ei onnistu"
     
     def sammuta(self, kohde):
         for tavara in self.tavaraluettelo:
             if tavara.nimi.lower() == kohde:
                 return tavara.sammuta()
-        return "En voi sammuttaa sellaista mitä minulla ei ole."
+        return "Ei onnistu"
         
     def avaa(self, kohde):    
         for tavara in self.huone.tavaraluettelo:
@@ -82,3 +83,12 @@ class Pelaaja:
             if tavara.nimi.lower() == kohde:
                 return tavara.sulje()
         return "Ei ole mitään suljettavaa"
+    def tao(self, kohde):
+        pass
+
+    def kuumenna(self, kohde):
+        for tavara in self.tavaraluettelo:
+            if tavara.nimi.lower() == kohde:
+                return tavara.kuumenna()
+        return "Tavaraa ei voi kuumentaa"
+    
